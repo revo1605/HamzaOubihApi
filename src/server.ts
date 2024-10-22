@@ -6,6 +6,8 @@ import morgan from 'morgan';
 
 _dotenv.config();
 
+import { initializeRoutes } from './initializeRoutes';
+
 if (!process.env.PORT) {
   console.log('No port value specified, default port will be chosen...');
 }
@@ -27,6 +29,9 @@ app.use(
   })
 );
 
+const { usersRoute } = initializeRoutes();
+
+app.use(usersRoute.createRouter());
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });

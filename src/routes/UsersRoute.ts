@@ -8,7 +8,7 @@ export class UsersRoute {
     this.userController = userController;
   }
 
-  createRputer(): Router {
+  createRouter(): Router {
     const router = Router();
 
     router.post('/users', this.userController.createUser.bind(this.userController));

@@ -7,6 +7,7 @@ import morgan from 'morgan';
 _dotenv.config();
 
 import { initializeRoutes } from './initializeRoutes';
+import { db } from './utils/firestore-helpers';
 
 if (!process.env.PORT) {
   console.log('No port value specified, default port will be chosen...');
@@ -29,7 +30,7 @@ app.use(
   })
 );
 
-const { usersRoute } = initializeRoutes();
+const { usersRoute } = initializeRoutes(db);
 
 app.use(usersRoute.createRouter());
 

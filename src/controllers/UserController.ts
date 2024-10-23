@@ -38,4 +38,20 @@ export class UserController {
       }
     }
   }
+
+  async getUsers(request: Request, response: Response): Promise<void> {
+    try {
+      const usersResponse = await this.usersService.getUsers();
+
+      response.status(usersResponse.status).send({
+        ...usersResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
 }

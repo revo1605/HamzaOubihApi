@@ -3,6 +3,8 @@ import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { encryptPassword } from '../utils/password';
+import { Timestamp } from 'firebase/firestore';
+import { formatUserData } from '../utils/formatData';
 
 export class UsersService {
   private db: FirestoreCollections;
@@ -35,5 +37,25 @@ export class UsersService {
         message: 'User already exists',
       }
     }
+  }
+
+  async getUsers(): Promise<IResBody> {
+    const users: User[] = [];
+    const usersQuerySnapshot = await this.db.users.get();
+
+    for (const doc of usersQuerySnapshot.docs) {
+      const formattedUser = formatUserData(doc.data());
+
+      users.push({
+        id: doc.id,
+        ...formattedUser,
+      });
+    }
+
+    return {
+      status: 200,
+      message: 'Users retrieved successfully!',
+      data: users
+    };
   }
 }

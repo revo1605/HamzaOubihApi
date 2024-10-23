@@ -13,6 +13,8 @@ export class UsersRoute {
     const router = Router();
 
     router.post('/users', validateCreateUser, this.userController.createUser.bind(this.userController));
+    router.get('/users', this.userController.getUsers.bind(this.userController));
+
     return router;
   }
 }

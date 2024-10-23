@@ -5,3 +5,8 @@ export const validateCreateUser = [
   body('password').notEmpty().withMessage('Password is required'),
   body('username').notEmpty().withMessage('Username is required'),
 ];
+
+export const validateLoginUser = [
+  body('email').isEmail().withMessage('Email is required'),
+  body('password').notEmpty().withMessage('Password is required'),
+];

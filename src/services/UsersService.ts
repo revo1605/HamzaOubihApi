@@ -2,9 +2,10 @@ import { User } from '../types/entities/User';
 import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
-import { encryptPassword } from '../utils/password';
+import {comparePasswords, encryptPassword} from '../utils/password';
 import { Timestamp } from 'firebase/firestore';
 import { formatUserData } from '../utils/formatData';
+import { generateToken } from '../utils/jwt';
 
 export class UsersService {
   private db: FirestoreCollections;
@@ -57,5 +58,43 @@ export class UsersService {
       message: 'Users retrieved successfully!',
       data: users
     };
+  }
+
+  async login (userData: {email: string; password: string}): Promise<IResBody> {
+    const { email, password } = userData;
+
+    const usersQuerySnapshot = await this.db.users.where('email', '==', email).get();
+
+    if (usersQuerySnapshot.empty) {
+      return {
+        status: 401,
+        message: 'Unauthorized',
+      }
+    } else {
+      const isPasswordValid = comparePasswords(
+        password,
+        usersQuerySnapshot.docs[0].data().password as string,
+      );
+
+      if (isPasswordValid) {
+        const formattedUser = formatUserData(usersQuerySnapshot.docs[0].data());
+
+        return {
+          status: 200,
+          message: 'User login successfully!',
+          data: {
+            user: {
+              ...formattedUser
+            },
+            token: generateToken(usersQuerySnapshot.docs[0].id)
+          }
+        };
+      } else {
+        return {
+          status: 401,
+          message: 'Unauthorized!',
+        }
+      }
+    }
   }
 }

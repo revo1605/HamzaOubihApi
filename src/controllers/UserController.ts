@@ -30,9 +30,10 @@ export class UserController {
           ...userResponse,
         });
       } catch (error) {
-        response.status(400).json({
+        response.status(500).json({
           status: 500,
           message: 'Internal server error',
+          data: error
         })
       }
     }

@@ -2,6 +2,7 @@ import { User } from '../types/entities/User';
 import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
+import { encryptPassword } from '../utils/password';
 
 export class UsersService {
   private db: FirestoreCollections;
@@ -18,6 +19,8 @@ export class UsersService {
       const userRef = this.db.users.doc();
       await userRef.set({
         ...userData,
+        password: encryptPassword(userData.password as string),
+        role: 'member',
         createdAt: firestoreTimestamp.now(),
         updatedAt: firestoreTimestamp.now(),
       });

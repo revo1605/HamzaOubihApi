@@ -29,7 +29,12 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     req.userId = decode.id;
 
     next();
-  } catch (e) {}
+  } catch (e) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Unauthorized',
+    });
+  }
 };
 
 const authJwt = {

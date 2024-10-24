@@ -86,7 +86,7 @@ export class UsersService {
             user: {
               ...formattedUser
             },
-            token: generateToken(usersQuerySnapshot.docs[0].id)
+            token: generateToken(usersQuerySnapshot.docs[0].id, formattedUser.role)
           }
         };
       } else {

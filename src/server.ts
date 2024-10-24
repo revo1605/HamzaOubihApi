@@ -8,6 +8,7 @@ _dotenv.config();
 
 import { initializeRoutes } from './initializeRoutes';
 import { db } from './utils/firestore-helpers';
+import { client as redisClient } from './utils/redis-client';
 
 if (!process.env.PORT) {
   console.log('No port value specified, default port will be chosen...');
@@ -30,9 +31,27 @@ app.use(
   })
 );
 
-const { usersRoute } = initializeRoutes(db);
+const startRedis = async () => {
+  try {
+    await redisClient.connect();
+
+    const pong = await redisClient.ping();
+    console.log('Redis server:', pong);
+
+  } catch (error) {
+    console.error('Error with redis:', error);
+  }
+};
+
+startRedis();
+
+const {
+  usersRoute,
+  postsRoute
+} = initializeRoutes(db, redisClient);
 
 app.use(usersRoute.createRouter());
+app.use(postsRoute.createRouter());
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });

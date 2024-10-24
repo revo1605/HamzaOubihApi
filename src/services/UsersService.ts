@@ -6,12 +6,15 @@ import {comparePasswords, encryptPassword} from '../utils/password';
 import { Timestamp } from 'firebase/firestore';
 import { formatUserData } from '../utils/formatData';
 import { generateToken } from '../utils/jwt';
+import { RedisClientType } from 'redis';
 
 export class UsersService {
   private db: FirestoreCollections;
+  private redisClient: RedisClientType;
 
-  constructor(db: FirestoreCollections) {
+  constructor(db: FirestoreCollections, redisClient: RedisClientType) {
     this.db = db;
+    this.redisClient = redisClient;
   }
 
   async createUser(userData: User): Promise<IResBody> {
@@ -41,16 +44,26 @@ export class UsersService {
   }
 
   async getUsers(): Promise<IResBody> {
-    const users: User[] = [];
-    const usersQuerySnapshot = await this.db.users.get();
+    const cacheKey = 'users';
+    let users: User[] = [];
 
-    for (const doc of usersQuerySnapshot.docs) {
-      const formattedUser = formatUserData(doc.data());
+    const cachedUsers = await this.redisClient.get(cacheKey);
 
-      users.push({
-        id: doc.id,
-        ...formattedUser,
-      });
+    if(cachedUsers) {
+      users = JSON.parse(cachedUsers);
+    } else {
+      const usersQuerySnapshot = await this.db.users.get();
+
+      for (const doc of usersQuerySnapshot.docs) {
+        const formattedUser = formatUserData(doc.data());
+
+        users.push({
+          id: doc.id,
+          ...formattedUser,
+        });
+      }
+
+      await this.redisClient.set(cacheKey, JSON.stringify(users));
     }
 
     return {

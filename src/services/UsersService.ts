@@ -97,4 +97,19 @@ export class UsersService {
       }
     }
   }
+
+  async getUserById(userId: string): Promise<IResBody> {
+
+    const userDoc = await this.db.users.doc(userId).get();
+    const formattedUser = formatUserData(userDoc.data());
+
+    return {
+      status: 200,
+      message: 'User retrieved successfully!',
+      data: {
+        id: userId,
+        ...formattedUser
+      }
+    };
+  }
 }

@@ -16,6 +16,8 @@ export class UsersRoute {
     router.post('/users', validateCreateUser, this.userController.createUser.bind(this.userController));
     router.get('/users', authJwt.verifyToken, this.userController.getUsers.bind(this.userController));
 
+    router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController));
+
     router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController));
 
     return router;

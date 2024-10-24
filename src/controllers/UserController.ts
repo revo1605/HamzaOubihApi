@@ -55,6 +55,29 @@ export class UserController {
     }
   }
 
+  async getUserById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+        const usersResponse = await this.usersService.getUserById(request.params.id);
+
+        response.status(usersResponse.status).send({
+          ...usersResponse,
+        });
+      } else {
+        response.status(404).json({
+          status: 404,
+          message: 'User not found'
+        });
+      }
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
   async login(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
 

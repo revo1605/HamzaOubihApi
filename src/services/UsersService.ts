@@ -3,7 +3,6 @@ import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import {comparePasswords, encryptPassword} from '../utils/password';
-import { Timestamp } from 'firebase/firestore';
 import { formatUserData } from '../utils/formatData';
 import { generateToken } from '../utils/jwt';
 import { RedisClientType } from 'redis';
@@ -63,7 +62,9 @@ export class UsersService {
         });
       }
 
-      await this.redisClient.set(cacheKey, JSON.stringify(users));
+      await this.redisClient.set(cacheKey, JSON.stringify(users), {
+        EX: 3600
+      });
     }
 
     return {

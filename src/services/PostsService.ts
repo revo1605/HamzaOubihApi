@@ -54,4 +54,13 @@ export class PostsService {
       data: categories
     };
   }
+
+  async addCommentToPost(commentData: any, postId: string): Promise<IResBody> {
+    // logic to add comment
+    return {
+      status: 200,
+      message: 'Comment added successfully!',
+      data: categories
+    };
+  }
 }

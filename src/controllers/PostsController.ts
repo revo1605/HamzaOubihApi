@@ -78,4 +78,37 @@ export class PostsController {
       });
     }
   }
+
+  async addCommentToPost(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request.',
+        data: errors.array(),
+      });
+    } else {
+      try {
+        const { description } = request.body;
+
+        const commentData = {
+          description,
+          createdBy: request.userId
+        };
+
+        const commentIResponse = await this.postsService.addCommentToPost(commentData, request.params.postId);
+
+        response.status(commentIResponse.status).send({
+          ...commentIResponse,
+        });
+      } catch (error) {
+        response.status(500).json({
+          status: 500,
+          message: 'Internal server error',
+          data: error
+        });
+      }
+    }
+  }
 }

@@ -46,10 +46,29 @@ export class PostsController {
 
   async getPosts(request: Request, response: Response): Promise<void> {
     try {
+      console.log('Category name');
+      console.log(request.query.category);
+
       const postsResponse = await this.postsService.getPosts();
 
       response.status(postsResponse.status).send({
         ...postsResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      });
+    }
+  }
+
+  async getCategories(request: Request, response: Response): Promise<void> {
+    try {
+      const categoriesResponse = await this.postsService.getCategories();
+
+      response.status(categoriesResponse.status).send({
+        ...categoriesResponse,
       });
     } catch (error) {
       response.status(500).json({

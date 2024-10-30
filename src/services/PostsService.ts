@@ -3,6 +3,7 @@ import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { Timestamp } from 'firebase/firestore';
+import { categories } from '../constants/categories';
 
 export class PostsService {
   private db: FirestoreCollections;
@@ -43,6 +44,14 @@ export class PostsService {
       status: 200,
       message: 'Posts retrieved successfully!',
       data: posts
+    };
+  }
+
+  async getCategories(): Promise<IResBody> {
+    return {
+      status: 200,
+      message: 'Categories retrieved successfully!',
+      data: categories
     };
   }
 }

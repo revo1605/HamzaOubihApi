@@ -13,8 +13,13 @@ export function initializeRoutes(db: FirestoreCollections, redisClient: RedisCli
   const postsController = new controllers.PostsController(postsService);
   const postsRoute = new routes.PostsRoute(postsController);
 
+  const commentsService = new services.CommentsService(db);
+  const commentsController = new controllers.CommentsController(commentsService);
+  const commentsRoute = new routes.CommentsRoute(commentsController);
+
   return {
     usersRoute,
     postsRoute,
+    commentsRoute
   };
 }

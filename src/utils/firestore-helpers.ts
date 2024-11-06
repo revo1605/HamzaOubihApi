@@ -4,6 +4,7 @@ import { getFirestore, FirestoreDataConverter, Timestamp } from 'firebase-admin/
 import { User } from '../types/entities/User';
 import { Post } from '../types/entities/Post';
 import { FirestoreCollections } from '../types/firestore';
+import { Comment } from '../types/entities/Comment';
 
 initializeApp({
   credential: cert({
@@ -30,6 +31,7 @@ const dataPoint = <T>(collectionPath: string) => firestore.collection(collection
 const db: FirestoreCollections = { // Firestore collections
   users: dataPoint<User>('users'),
   posts: dataPoint<Post>('posts'),
+  comments: dataPoint<Comment>('comments')
 };
 
 export { db, firestore, firestoreTimestamp };

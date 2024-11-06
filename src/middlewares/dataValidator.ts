@@ -30,3 +30,9 @@ export const validateCreatePost = [
     )
     .withMessage('All categories must be strings'),
 ];
+
+
+export const validateChangePassword = [
+  body('oldPassword').notEmpty().withMessage('Old password is required'),
+  body('newPassword').notEmpty().withMessage('New password is required'),
+];

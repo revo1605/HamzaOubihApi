@@ -1,3 +1,4 @@
+import { Post } from '../types/entities/Post';
 import { User } from '../types/entities/User';
 
 export const formatUserData = (userData?: User): Partial<User> => {
@@ -12,4 +13,15 @@ export const formatUserData = (userData?: User): Partial<User> => {
   }
 
   return {};
+};
+
+export const formatPostData = (postData: any): Post => {
+  return {
+    title: postData.title,
+    description: postData.description,
+    categories: postData.categories,
+    createdBy: postData.createdBy,
+    createdAt: postData.createdAt,
+    updatedAt: postData.updatedAt,
+  };
 };

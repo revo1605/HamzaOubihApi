@@ -173,11 +173,9 @@ export class CommentsController {
   }
 
   async updownvote(request: Request, response: Response): Promise<void> {
-    const commentsId = request.params.id; // Get the post ID from the route parameters
-    const userId = request.userId; // Assuming you have middleware to set the userId
-
+    const commentsId = request.params.id;
+    const userId = request.userId;
     try {
-      
       const voteResponse = await this.commentsService.updownvoteComment(commentsId, userId as string);
 
       response.status(voteResponse.status).send(voteResponse);

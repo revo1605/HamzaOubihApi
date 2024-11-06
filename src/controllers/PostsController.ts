@@ -4,6 +4,9 @@ import { validationResult } from 'express-validator';
 
 export class PostsController {
   private postsService: PostsService;
+  upVote: any;
+  downVote: any;
+  getPostByTitle: any;
 
   constructor(postsService: PostsService) {
     this.postsService = postsService;
@@ -267,6 +270,27 @@ export class PostsController {
       });
     }
   }
+  ////
+  async updownvote(request: Request, response: Response): Promise<void> {
+    const postId = request.params.id;
+    const userId = request.userId;
+
+    try {
+      const voteResponse = await this.postsService.updownvotePost(
+        postId,
+        userId as string,
+      );
+
+      response.status(voteResponse.status).send(voteResponse);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        data: error,
+      });
+    }
+  }
+
   
   
 }

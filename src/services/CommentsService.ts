@@ -162,10 +162,9 @@ export class CommentsService {
   }
 
   async updownvoteComment(commentsId: string, userId: string): Promise<IResBody> {
-    const commentRef = this.db.posts.doc(commentsId);
+    const commentRef = this.db.comments.doc(commentsId);
     const commentDoc = await commentRef.get();
 
-    // Check if the post document exists
     if (!commentDoc.exists) {
       return {
         status: 404,
@@ -176,28 +175,23 @@ export class CommentsService {
 
     const commentData = commentDoc.data() as Post;
 
-    // Initialize usersVote and voteCount if they are undefined
     if (!commentData.usersVote) commentData.usersVote = [];
     if (commentData.voteCount === undefined) commentData.voteCount = 0;
 
-    // Check if the user has already voted on this post
     const userHasVoted = commentData.usersVote.includes(userId);
 
     if (userHasVoted) {
-      // User is removing their vote
       commentData.usersVote = commentData.usersVote.filter((id: string) => id !== userId);
-      commentData.voteCount -= 1; // Decrement vote count
+      commentData.voteCount -= 1; 
     } else {
-      // User is adding their vote
       commentData.usersVote.push(userId);
-      commentData.voteCount += 1; // Increment vote count
+      commentData.voteCount += 1;
     }
 
-    // Update the comment document in Firestore
     await commentRef.update({
       usersVote: commentData.usersVote,
       voteCount: commentData.voteCount,
-      updatedAt: firestoreTimestamp.now(), // Ensure to update the timestamp
+      updatedAt: firestoreTimestamp.now(),
     });
 
     return {

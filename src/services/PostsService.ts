@@ -237,4 +237,53 @@ export class PostsService {
     };
   }
 
+async updownvotePost(postId: string, userId: string): Promise<IResBody> {
+  const postRef = this.db.posts.doc(postId);
+  const postDoc = await postRef.get();
+
+  if (!postDoc.exists) {
+    return {
+      status: 404,
+      message: 'Post not found!',
+      data: null,
+    };
+  }
+
+  const postData = postDoc.data() as Post;
+
+  if (!postData.usersVote) postData.usersVote = [];
+  if (postData.voteCount === undefined) postData.voteCount = 0;
+
+  const userHasVoted = postData.usersVote.includes(userId);
+
+  if (userHasVoted) {
+    postData.usersVote = postData.usersVote.filter((id: string) => id !== userId);
+    postData.voteCount -= 1;
+  } else {
+    postData.usersVote.push(userId);
+    postData.voteCount += 1;
+  }
+
+  await postRef.update({
+    usersVote: postData.usersVote,
+    voteCount: postData.voteCount,
+    updatedAt: firestoreTimestamp.now(),
+  });
+
+  return {
+    status: 200,
+    message: 'Vote processed successfully!',
+    data: {
+      id: postId,
+      title: postData.title,
+      description: postData.description,
+      categories: postData.categories,
+      createdBy: postData.createdBy,
+      createdAt: postData.createdAt instanceof Timestamp ? postData.createdAt.toDate() : postData.createdAt,
+      updatedAt: firestoreTimestamp.now(),
+      voteCount: postData.voteCount,
+      usersVote: postData.usersVote,
+    },
+  };
+}
 }

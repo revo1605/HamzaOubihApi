@@ -10,4 +10,5 @@ export interface Post {
   createdBy?: string;
   createdAt?: Timestamp | Date;
   updatedAt?: Timestamp | Date;
+
 }

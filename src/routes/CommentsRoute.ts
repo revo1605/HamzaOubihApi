@@ -27,6 +27,8 @@ export class CommentsRoute {
 
         router.delete('/comments/:id', this.commentsController.deleteComment.bind(this.commentsController));
 
+        router.post('/comments/:id/vote',authJwt.verifyToken , this.commentsController.updownvote.bind(this.commentsController));
+
         
         return router;
 
